@@ -21,8 +21,14 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 def create_ref_code():
     return ''.join(random.choices(string.ascii_lowercase + string.digits, k=20))
 
+
 def DashboardIndex(request):
-    return render(request,'dashboard/index.html')
+    context = {
+        'items': OrderItem.objects.all()
+    }
+    return render(request, 'dashboard/index.html', context)
+
+
 def products(request):
     context = {
         'items': Item.objects.all()
@@ -39,7 +45,7 @@ def is_valid_form(values):
 
 
 class HomeView(ListView):
-    
+
     model = Item
     paginate_by = 10
     template_name = "home.html"

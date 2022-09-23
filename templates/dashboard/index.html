@@ -55,7 +55,7 @@
       <!-- ============================================================== -->
       <div class="dashboard-header">
         <nav class="navbar navbar-expand-lg bg-white fixed-top">
-          <a class="navbar-brand" href="index.html">Concept</a>
+          <a class="navbar-brand" href="/">Beeshop</a>
           <button
             class="navbar-toggler"
             type="button"
@@ -944,22 +944,23 @@
                             </tr>
                           </thead>
                           <tbody>
+                            {% for itm in items %}
                             <tr>
                               <td>1</td>
                               <td>
                                 <div class="m-r-10">
                                   <img
-                                    src="assets/images/product-pic.jpg"
+                                    src="{{itm.item.image.url}}"
                                     alt="user"
                                     class="rounded"
                                     width="45"
                                   />
                                 </div>
                               </td>
-                              <td>Product #1</td>
+                              <td>{{itm.item.title}}</td>
                               <td>id000001</td>
-                              <td>20</td>
-                              <td>$80.00</td>
+                              <td>{{itm.quantity}}</td>
+                              <td>${{itm.get_final_price}}</td>
                               <td>27-08-2018 01:22:12</td>
                               <td>Patricia J. King</td>
                               <td>
@@ -967,6 +968,7 @@
                                 >InTransit
                               </td>
                             </tr>
+                            {% endfor %}
                             <tr>
                               <td>2</td>
                               <td>

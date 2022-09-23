@@ -17,8 +17,8 @@ from shop.views import (
     
 )
 urlpatterns = [
-    path('', DashboardIndex, name='index'),
-    path('ad', HomeView.as_view(), name='home'),
+    path('', HomeView.as_view(), name='home'),
+    path('dashboard/', DashboardIndex, name='dashboardindex'),
     path('checkout/', CheckoutView.as_view(), name='checkout'),
     path('order-summary/', OrderSummaryView.as_view(), name='order-summary'),
     path('product/<slug>/', ItemDetailView.as_view(), name='product'),
