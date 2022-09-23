@@ -3,6 +3,7 @@ from django.urls import path
 app_name = 'shop'
 
 from shop.views import (
+    DashboardIndex,
     ItemDetailView,
     CheckoutView,
     HomeView,
@@ -13,9 +14,11 @@ from shop.views import (
     PaymentView,
     AddCouponView,
     RequestRefundView
+    
 )
 urlpatterns = [
-    path('', HomeView.as_view(), name='home'),
+    path('', DashboardIndex, name='index'),
+    path('ad', HomeView.as_view(), name='home'),
     path('checkout/', CheckoutView.as_view(), name='checkout'),
     path('order-summary/', OrderSummaryView.as_view(), name='order-summary'),
     path('product/<slug>/', ItemDetailView.as_view(), name='product'),
