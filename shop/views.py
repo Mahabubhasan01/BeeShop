@@ -1,6 +1,5 @@
 import random
 import string
-
 import stripe
 from django.conf import settings
 from django.contrib import messages
@@ -22,18 +21,26 @@ def create_ref_code():
     return ''.join(random.choices(string.ascii_lowercase + string.digits, k=20))
 
 
+def EProduct(request):
+    return render(request, 'dashboard/dashboard-finance.html')
+
 def DashboardIndex(request):
+    username = request.user.username
+    total = 0
+
     context = {
-        'items': OrderItem.objects.all()
+        'items': OrderItem.objects.all(),
+        'username': username,
+        'total': total
     }
-    return render(request, 'dashboard/index.html', context)
+    return render(request, 'index.html', context)
 
 
 def products(request):
     context = {
         'items': Item.objects.all()
     }
-    return render(request, "products.html", context)
+    return render(request, "product.html", context)
 
 
 def is_valid_form(values):
@@ -428,13 +435,13 @@ def remove_from_cart(request, slug):
             order.items.remove(order_item)
             order_item.delete()
             messages.info(request, "This item was removed from your cart.")
-            return redirect("core:order-summary")
+            return redirect("shop:order-summary")
         else:
             messages.info(request, "This item was not in your cart")
-            return redirect("core:product", slug=slug)
+            return redirect("shop:product", slug=slug)
     else:
         messages.info(request, "You do not have an active order")
-        return redirect("core:product", slug=slug)
+        return redirect("shop:product", slug=slug)
 
 
 @login_required
@@ -459,13 +466,13 @@ def remove_single_item_from_cart(request, slug):
             else:
                 order.items.remove(order_item)
             messages.info(request, "This item quantity was updated.")
-            return redirect("core:order-summary")
+            return redirect("shop:order-summary")
         else:
             messages.info(request, "This item was not in your cart")
-            return redirect("core:product", slug=slug)
+            return redirect("shop:product", slug=slug)
     else:
         messages.info(request, "You do not have an active order")
-        return redirect("core:product", slug=slug)
+        return redirect("shop:product", slug=slug)
 
 
 def get_coupon(request, code):
@@ -474,7 +481,7 @@ def get_coupon(request, code):
         return coupon
     except ObjectDoesNotExist:
         messages.info(request, "This coupon does not exist")
-        return redirect("core:checkout")
+        return redirect("shop:checkout")
 
 
 class AddCouponView(View):
@@ -488,10 +495,10 @@ class AddCouponView(View):
                 order.coupon = get_coupon(self.request, code)
                 order.save()
                 messages.success(self.request, "Successfully added coupon")
-                return redirect("core:checkout")
+                return redirect("shop:checkout")
             except ObjectDoesNotExist:
                 messages.info(self.request, "You do not have an active order")
-                return redirect("core:checkout")
+                return redirect("shop:checkout")
 
 
 class RequestRefundView(View):
@@ -522,8 +529,8 @@ class RequestRefundView(View):
                 refund.save()
 
                 messages.info(self.request, "Your request was received.")
-                return redirect("core:request-refund")
+                return redirect("shop:request-refund")
 
             except ObjectDoesNotExist:
                 messages.info(self.request, "This order does not exist.")
-                return redirect("core:request-refund")
+                return redirect("shop:request-refund")

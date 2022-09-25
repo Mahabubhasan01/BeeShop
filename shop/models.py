@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models import Sum
 from django.shortcuts import reverse
 from django_countries.fields import CountryField
+import uuid
 
 
 CATEGORY_CHOICES = (
@@ -64,6 +65,7 @@ class Item(models.Model):
 
 
 class OrderItem(models.Model):
+    #id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
     ordered = models.BooleanField(default=False)

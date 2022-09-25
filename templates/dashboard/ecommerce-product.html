@@ -1,6 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
 <!doctype html>
 <html lang="en">
- 
+ {% load static %}
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -21,7 +24,7 @@
         <!-- ============================================================== -->
         <!-- navbar -->
         <!-- ============================================================== -->
-        <div class="dashboard-header">
+        {% comment %} <div class="dashboard-header">
             <nav class="navbar navbar-expand-lg bg-white fixed-top">
                 <a class="navbar-brand" href="index.html">Concept</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -128,14 +131,14 @@
                     </ul>
                 </div>
             </nav>
-        </div>
+        </div> {% endcomment %}
         <!-- ============================================================== -->
         <!-- end navbar -->
         <!-- ============================================================== -->
         <!-- ============================================================== -->
         <!-- left sidebar -->
         <!-- ============================================================== -->
-       <div class="nav-left-sidebar sidebar-dark">
+       {% comment %} <div class="nav-left-sidebar sidebar-dark">
             <div class="menu-list">
                 <nav class="navbar navbar-expand-lg navbar-light">
                     <a class="d-xl-none d-lg-none" href="#">Dashboard</a>
@@ -423,7 +426,7 @@
                     </div>
                 </nav>
             </div>
-        </div>
+        </div> {% endcomment %}
         <!-- ============================================================== -->
         <!-- end left sidebar -->
         <!-- ============================================================== -->
@@ -866,13 +869,14 @@
         <!-- ============================================================== -->
         <!-- Optional JavaScript -->
         <!-- jquery 3.3.1 -->
-        <script src="assets/vendor/jquery/jquery-3.3.1.min.js"></script>
+        <script src="{% static 'assets/vendor/jquery/jquery-3.3.1.min.js'%}"></script>
         <!-- bootstap bundle js -->
-        <script src="assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
+        <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.js'%}"></script>
         <!-- slimscroll js -->
-        <script src="assets/vendor/slimscroll/jquery.slimscroll.js"></script>
+        <script src="{% static 'assets/vendor/slimscroll/jquery.slimscroll.js'%}"></script>
         <!-- main js -->
-        <script src="assets/libs/js/main-js.js"></script>
+        <script src="{% static 'assets/libs/js/main-js.js'%}"></script>
 </body>
  
 </html>
+{% endblock content %}
