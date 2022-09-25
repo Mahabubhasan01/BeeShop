@@ -1,4 +1,6 @@
+from multiprocessing import context
 import random
+from re import T
 import string
 import stripe
 from django.conf import settings
@@ -21,8 +23,25 @@ def create_ref_code():
     return ''.join(random.choices(string.ascii_lowercase + string.digits, k=20))
 
 
-def EProduct(request):
-    return render(request, 'dashboard/dashboard-finance.html')
+def Dashboard_finance(request):
+    context = {
+        'title':'finance'
+    }
+    return render(request, 'dashboard/dashboard-finance.html',context)
+
+
+def dashboard_sales(request):
+    context = {
+        'title':'sales'
+    }
+    return render(request, 'dashboard/dashboard-sales.html',context)
+
+def dashboard_influencer(request):
+    context = {
+        'title':'influencer'
+    }
+    return render(request, 'dashboard/dashboard-influencer.html',context)
+
 
 def DashboardIndex(request):
     username = request.user.username

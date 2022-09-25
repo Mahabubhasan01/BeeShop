@@ -13,13 +13,17 @@ from shop.views import (
     remove_single_item_from_cart,
     PaymentView,
     AddCouponView,
-    RequestRefundView,EProduct,
+    RequestRefundView,Dashboard_finance as Finance,
+    dashboard_sales as Sales,
+    dashboard_influencer as Influencer
     
 )
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
-    path('finance/', DashboardIndex, name='finance'),
-    path('all_products/', EProduct, name='all_products'),
+    path('dashboard/', DashboardIndex, name='index'),
+    path('sales/', Sales, name='sales'),
+    path('influencer/', Influencer, name='influencer'),
+    path('finance/', Finance, name='finance'),
     path('checkout/', CheckoutView.as_view(), name='checkout'),
     path('order-summary/', OrderSummaryView.as_view(), name='order-summary'),
     path('product/<slug>/', ItemDetailView.as_view(), name='product'),
