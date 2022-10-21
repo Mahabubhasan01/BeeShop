@@ -21,6 +21,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('shop.urls'))
 ]
+handler404 = 'shop.views.error_404_view'
 if settings.DEBUG:
     # import debug_toolbar
     # urlpatterns += [path('__debug__/', include(debug_toolbar.urls))]

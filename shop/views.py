@@ -1,6 +1,5 @@
 from multiprocessing import context
 import random
-from re import T
 import string
 import stripe
 from django.conf import settings
@@ -11,11 +10,20 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
+from django.http import HttpResponseRedirect
+from django.contrib.auth import update_session_auth_hash
 from django.views.generic import ListView, DetailView, View
-
+from django.contrib.auth import logout
+from django.contrib.auth.models import User
 from .forms import CheckoutForm, CouponForm, RefundForm, PaymentForm
 from .models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, UserProfile
 
+from django.contrib.auth.forms import (
+    AuthenticationForm,
+    PasswordChangeForm,
+    PasswordResetForm,
+    SetPasswordForm,
+)
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
@@ -25,22 +33,23 @@ def create_ref_code():
 
 def Dashboard_finance(request):
     context = {
-        'title':'finance'
+        'title': 'finance'
     }
-    return render(request, 'dashboard/dashboard-finance.html',context)
+    return render(request, 'dashboard/dashboard-finance.html', context)
 
 
 def dashboard_sales(request):
     context = {
-        'title':'sales'
+        'title': 'sales'
     }
-    return render(request, 'dashboard/dashboard-sales.html',context)
+    return render(request, 'dashboard/dashboard-sales.html', context)
+
 
 def dashboard_influencer(request):
     context = {
-        'title':'influencer'
+        'title': 'influencer'
     }
-    return render(request, 'dashboard/dashboard-influencer.html',context)
+    return render(request, 'dashboard/dashboard-influencer.html', context)
 
 
 def DashboardIndex(request):
@@ -53,6 +62,17 @@ def DashboardIndex(request):
         'total': total
     }
     return render(request, 'index.html', context)
+
+
+def user_profile(request):
+    username = request.user.username
+    user = request.user
+    print(user)
+    context = {
+        'user': request.user,
+        'username': username
+    }
+    return render(request, 'dashboard/pages/user-profile.html', context)
 
 
 def products(request):
@@ -75,6 +95,17 @@ class HomeView(ListView):
     model = Item
     paginate_by = 10
     template_name = "home.html"
+
+
+class All_Product(ListView):
+    model = Item
+
+    template_name = 'dashboard/ecommerce-product.html'
+
+
+class ProductDetailView(DetailView):
+    model = Item
+    template_name = "dashboard/ecommerce-product-single.html"
 
 
 class CheckoutView(View):
@@ -405,7 +436,7 @@ class ItemDetailView(DetailView):
     template_name = "product.html"
 
 
-@login_required
+# @login_required
 def add_to_cart(request, slug):
     item = get_object_or_404(Item, slug=slug)
     order_item, created = OrderItem.objects.get_or_create(
@@ -463,7 +494,7 @@ def remove_from_cart(request, slug):
         return redirect("shop:product", slug=slug)
 
 
-@login_required
+# @login_required
 def remove_single_item_from_cart(request, slug):
     item = get_object_or_404(Item, slug=slug)
     order_qs = Order.objects.filter(
@@ -553,3 +584,38 @@ class RequestRefundView(View):
             except ObjectDoesNotExist:
                 messages.info(self.request, "This order does not exist.")
                 return redirect("shop:request-refund")
+
+
+def Register(request):
+    return render(request, 'dashboard/pages/sign-up.html')
+
+
+def SignIn(request):
+    return render(request, 'dashboard/pages/login.html')
+
+
+def Sign_Out(request):
+    logout(request)
+    return redirect('signin')
+
+
+def change_password(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            fm = PasswordChangeForm(user=request.user, data=request.POST)
+            if fm.is_valid():
+                fm.save()
+                update_session_auth_hash(request, fm.user)
+                return HttpResponseRedirect('/user-profile/')
+        else:
+            fm = PasswordChangeForm(user=request.user)
+            return render(request, 'exchange/changepassword.html', {'form': fm})
+    else:
+        HttpResponseRedirect('/dashboard')
+
+
+def error_404_view(request, exception):
+
+    # we add the path to the the 404.html file
+    # here. The name of our HTML file is 404.html
+    return render(request, 'dashboard/pages/404-page.html')

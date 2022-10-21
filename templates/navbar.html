@@ -7,7 +7,6 @@ class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar"
   <a
     class="navbar-brand waves-effect"
     href="/"
-    target="_blank"
   >
     <strong class="blue-text">Beeshop</strong>
   </a>
@@ -38,7 +37,7 @@ class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar"
       <li class="nav-item">
         <a
           class="nav-link waves-effect"
-          href="all_products/"
+          href="{% url 'shop:all_product' %}"
           
           >Products</a
         >
@@ -57,6 +56,22 @@ class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar"
           href="{% url 'shop:index' %}"
           
           >Dashboard</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link waves-effect"
+          href="{% url 'shop:register' %}"
+          
+          >Register</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link waves-effect"
+          href="{% url 'shop:signin' %}"
+          
+          >Login</a
         >
       </li>
     </ul>
