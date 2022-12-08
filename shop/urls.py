@@ -1,20 +1,25 @@
 from django.contrib.auth import views as auth_views
+from shop.models import Payment
 
 from shop.views import (
+    All_Favourite,
     DashboardIndex,
     ItemDetailView,
+    Payment_P,
     ProductDetailView,
     CheckoutView,
     HomeView,
     All_Product,
     OrderSummaryView,
+    PaymentView,
     Register,
     Sign_Out,
     SignIn,
     add_to_cart,
+    favourite_item,
     remove_from_cart,
     remove_single_item_from_cart,
-    PaymentView,
+
     AddCouponView,
     RequestRefundView, Dashboard_finance as Finance,
     dashboard_sales as Sales,
@@ -29,8 +34,10 @@ app_name = 'shop'
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
-    path('all_products',All_Product.as_view(),name='all_product'),
-    path('dashboard/', DashboardIndex, name='index'),
+    path('all_products', All_Product.as_view(), name='all_product'),
+    path('favourites', All_Favourite.as_view(), name='favourites'),
+    path('<int:pk>/', favourite_item, name='favour'),
+    path('dashboard/', DashboardIndex, name='dboard'),
     path('sales/', Sales, name='sales'),
     path('influencer/', Influencer, name='influencer'),
     path('finance/', Finance, name='finance'),
@@ -44,14 +51,15 @@ urlpatterns = [
     path('remove-from-cart/<slug>/', remove_from_cart, name='remove-from-cart'),
     path('remove-item-from-cart/<slug>/', remove_single_item_from_cart,
          name='remove-single-item-from-cart'),
-    path('payment/<payment_option>/', PaymentView.as_view(), name='payment'),
+    path('payment/', PaymentView.as_view(), name='payent'),
     path('request-refund/', RequestRefundView.as_view(), name='request-refund'),
     path('sign-up/', Register, name='register'),
     path('sign-in/', SignIn, name='signin'),
     path('signout/', Sign_Out, name='signout'),
+    path('pay/', Payment_P, name='payment'),
 
 
-path('change-password/', change_password, name='change_password'),
+    path('change-password/', change_password, name='change_password'),
 
     path('reset_password/', auth_views.PasswordResetView.as_view(),
          name='reset_password'),

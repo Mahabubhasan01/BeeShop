@@ -1,4 +1,4 @@
-from multiprocessing import context
+from django.urls import reverse
 import random
 import string
 import stripe
@@ -11,19 +11,22 @@ from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.contrib.auth import update_session_auth_hash
 from django.views.generic import ListView, DetailView, View
 from django.contrib.auth import logout
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, auth
 from .forms import CheckoutForm, CouponForm, RefundForm, PaymentForm
 from .models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, UserProfile
-
+from sslcommerz_lib import SSLCOMMERZ
+from django.contrib import messages
 from django.contrib.auth.forms import (
     AuthenticationForm,
     PasswordChangeForm,
     PasswordResetForm,
     SetPasswordForm,
 )
+from django.conf import settings
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
@@ -97,9 +100,17 @@ class HomeView(ListView):
     template_name = "home.html"
 
 
+""" 
+def CategoryFilter(request, cat):
+    item = Item.objects.filter(category=cat)
+    context = {
+        "items": item
+    }
+    return render(request, 'categoriesitem.html', context) """
+
+
 class All_Product(ListView):
     model = Item
-
     template_name = 'dashboard/ecommerce-product.html'
 
 
@@ -306,7 +317,7 @@ class PaymentView(View):
         else:
             messages.warning(
                 self.request, "You have not added a billing address")
-            return redirect("core:checkout")
+            return redirect("shop:checkout")
 
     def post(self, *args, **kwargs):
         order = Order.objects.get(user=self.request.user, ordered=False)
@@ -418,7 +429,52 @@ class PaymentView(View):
         return redirect("/payment/stripe/")
 
 
-class OrderSummaryView(LoginRequiredMixin, View):
+class All_Favourite(ListView):
+    context_object_name = 'Item'
+    queryset = Item.objects.filter(favourite=True)
+    template_name = 'favourite.html'
+
+
+def favourite_item(request, pk):
+    fav = Item.objects.get(id=pk)
+    fav.favourite = True
+    fav.save()
+    messages.success(request, 'add favourite done......')
+    return redirect('shop:all_product')
+
+
+def Payment_P(request):
+    order = Order.objects.get(user=request.user, ordered=False)
+
+    settings = {'store_id': 'testbox',
+                'store_pass': 'qwerty', 'issandbox': True}
+    sslcz = SSLCOMMERZ(settings)
+    post_body = {}
+    post_body['total_amount'] = int(order.get_total()*100)
+    post_body['currency'] = "BDT"
+    post_body['tran_id'] = "12345"
+    post_body['success_url'] = 'shop:register'
+    post_body['fail_url'] = "your fail url"
+    post_body['cancel_url'] = "your cancel url"
+    post_body['emi_option'] = 0
+    post_body['cus_name'] = "test"
+    post_body['cus_email'] = "test@test.com"
+    post_body['cus_phone'] = "01700000000"
+    post_body['cus_add1'] = "customer address"
+    post_body['cus_city'] = "Dhaka"
+    post_body['cus_country'] = "Bangladesh"
+    post_body['shipping_method'] = "NO"
+    post_body['multi_card_name'] = ""
+    post_body['num_of_item'] = 1
+    post_body['product_name'] = "Test"
+    post_body['product_category'] = "Test Category"
+    post_body['product_profile'] = "general"
+
+    response = sslcz.createSession(post_body)  # API response
+    return HttpResponseRedirect((response['GatewayPageURL']))
+
+
+class OrderSummaryView(View):
     def get(self, *args, **kwargs):
         try:
             order = Order.objects.get(user=self.request.user, ordered=False)
@@ -466,7 +522,6 @@ def add_to_cart(request, slug):
         return redirect("shop:order-summary")
 
 
-@login_required
 def remove_from_cart(request, slug):
     item = get_object_or_404(Item, slug=slug)
     order_qs = Order.objects.filter(
@@ -587,16 +642,66 @@ class RequestRefundView(View):
 
 
 def Register(request):
-    return render(request, 'dashboard/pages/sign-up.html')
+    if request.method == 'POST':
+        firstname = request.POST['firstname']
+        lastname = request.POST['lastname']
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password1']
+        password2 = request.POST['password2']
+
+        if password == password2:
+            if User.objects.filter(email=email).exists():
+                messages.info(request, 'Email Taken')
+                return redirect('shop:register')
+            elif User.objects.filter(username=username).exists():
+                messages.info(request, 'Username Taken')
+                return redirect('shop:register')
+            else:
+                user = User.objects.create_user(first_name=firstname,
+                                                username=username, last_name=lastname, email=email, password=password)
+                user.save()
+
+                # log user in and redirect to settings page
+                """ user_login = auth.authenticate(
+                    username=username, password=password)
+                auth.login(request, user_login) """
+
+                # create a Profile object for the new user
+                """ user_model = User.objects.get(username=username)
+                new_profile = UserProfile.objects.create(
+                    user=user_model, id_user=user_model.id)
+                new_profile.save() """
+                return redirect('shop:signin')
+        else:
+            messages.info(request, 'Password Not Matching')
+            return redirect('shop:register')
+
+    else:
+        return render(request, 'register.html')
 
 
 def SignIn(request):
-    return render(request, 'dashboard/pages/login.html')
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = auth.authenticate(username=username, password=password)
+
+        if user is not None:
+            auth.login(request, user)
+            return redirect('/')
+        else:
+            messages.info(request, 'Credentials Invalid')
+            return redirect('shop:signin')
+
+    else:
+        return render(request, 'login.html')
 
 
 def Sign_Out(request):
     logout(request)
-    return redirect('signin')
+    return redirect('shop:signin')
 
 
 def change_password(request):

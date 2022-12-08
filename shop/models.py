@@ -44,12 +44,13 @@ class Item(models.Model):
     slug = models.SlugField()
     description = models.TextField()
     image = models.ImageField()
+    favourite = models.BooleanField(blank=True, default=False)
 
     def __str__(self):
         return self.title
 
     def get_absolute_url(self):
-        return reverse("shop:product", kwargs={
+        return reverse("shop:product_detail", kwargs={
             'slug': self.slug
         })
 
@@ -71,12 +72,16 @@ class OrderItem(models.Model):
     ordered = models.BooleanField(default=False)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
+    favourite = models.BooleanField(blank=True, default=False)
 
     def __str__(self):
         return f"{self.quantity} of {self.item.title}"
 
     def get_total_item_price(self):
         return self.quantity * self.item.price
+
+    def get_total_item(self):
+        return self.quantity
 
     def get_total_discount_item_price(self):
         return self.quantity * self.item.discount_price

@@ -28,7 +28,7 @@ class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar"
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <!-- Left -->
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link waves-effect" href="/"
           >Home
           <span class="sr-only">(current)</span>
@@ -45,19 +45,29 @@ class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar"
       <li class="nav-item">
         <a
           class="nav-link waves-effect"
-          href="https://mdbootstrap.com/docs/jquery/getting-started/download/"
-          target="_blank"
-          > download</a
+          href="{% url 'shop:dboard' %}"
+          
+          >Dashboard</a
+        >
+      </li>
+      {% if user %}
+      <li class="nav-item">
+        <a
+          class="nav-link waves-effect"
+          href="{% url 'shop:register' %}"
+          
+          >Profile</a
         >
       </li>
       <li class="nav-item">
         <a
           class="nav-link waves-effect"
-          href="{% url 'shop:index' %}"
+          href="{% url 'shop:signout' %}"
           
-          >Dashboard</a
+          >Logout</a
         >
       </li>
+      {% else %}
       <li class="nav-item">
         <a
           class="nav-link waves-effect"
@@ -74,16 +84,27 @@ class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar"
           >Login</a
         >
       </li>
+      {% endif %}
     </ul>
 
     <!-- Right -->
     <ul class="navbar-nav nav-flex-icons">
-      <li class="nav-item">
-        <a class="nav-link waves-effect">
-          <span class="badge red z-depth-1 mr-1"> 1 </span>
-          <i class="fas fa-shopping-cart"></i>
-          <span class="clearfix d-none d-sm-inline-block"> Cart </span>
-        </a>
+      <li class="nav-item  d-flex justify-content-center  align-items-center">
+        <div class='' title='cart items'>
+          <a href="{%url 'shop:order-summary'%}" class="nav-link waves-effect">
+            {% for order_item in .object.items.all %}
+            <span class="badge red z-depth-1 mr-1"> {{ order_item.get_total_item }} </span>
+            {% endfor %}
+            <i class="fas fa-shopping-cart"></i>
+            <span class="clearfix d-none d-sm-inline-block"> </span>
+          </a>
+        </div>
+        <div class="" title='favourites items'>
+          <a
+            href="{% url 'shop:favourites' %}"
+            class="product-wishlist-btn"
+            ><i class="fas fa-heart"></i
+          ></a>
       </li>
       {% comment %} <li class="nav-item">
         <a

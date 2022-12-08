@@ -47,7 +47,8 @@
     <!-- ============================================================== -->
     <!-- signup form  -->
     <!-- ============================================================== -->
-    <form class="splash-container">
+    <form class="splash-container" method='POST'>
+      {% csrf_token %}
       <div class="card">
         <div class="card-header">
           <h3 class="mb-1">Registrations Form</h3>
@@ -58,7 +59,29 @@
             <input
               class="form-control form-control-lg"
               type="text"
-              name="nick"
+              name="Username"
+              required=""
+              placeholder="Username"
+              autocomplete="off"
+            />
+          </div>
+        <div class="card-body">
+          <div class="form-group">
+            <input
+              class="form-control form-control-lg"
+              type="text"
+              name="Username"
+              required=""
+              placeholder="Username"
+              autocomplete="off"
+            />
+          </div>
+        <div class="card-body">
+          <div class="form-group">
+            <input
+              class="form-control form-control-lg"
+              type="text"
+              name="Username"
               required=""
               placeholder="Username"
               autocomplete="off"
@@ -76,6 +99,7 @@
           </div>
           <div class="form-group">
             <input
+            name="password"
               class="form-control form-control-lg"
               id="pass1"
               type="password"
@@ -85,6 +109,7 @@
           </div>
           <div class="form-group">
             <input
+            name="password1"
               class="form-control form-control-lg"
               required=""
               placeholder="Confirm"
