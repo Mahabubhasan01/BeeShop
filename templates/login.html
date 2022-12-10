@@ -67,6 +67,17 @@
     -o-object-fit: cover;
     object-fit: cover;
   }
+  .back {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    top: 0;
+    color: #e81ab2;
+    cursor: pointer;
+  }
+  .back:hover {
+    text-decoration: underline;
+  }
 
   .container {
     display: flex;
@@ -235,14 +246,23 @@
   <div class="container">
     <section class="wrapper">
       <div class="heading">
-        <h1 class="text text-large">Sign In</h1>
+        <div class="back">
+          <span></span
+          ><a href="/">
+            <span class="arrowicon"><h4>&#8592; Home</h4></span></a
+          >
+        </div>
         <p class="text text-normal">
           New user?
-          <span><a href="{% url 'shop:register' %}" class="text text-links">Create an account</a></span>
+          <span
+            ><a href="{% url 'shop:register' %}" class="text text-links"
+              >Create an account</a
+            ></span
+          >
         </p>
       </div>
       <form name="signin" class="form" method="POST">
-          {% csrf_token %}
+        {% csrf_token %}
         <div class="input-control">
           <label for="email" class="input-label" hidden>Email Address</label>
           <input

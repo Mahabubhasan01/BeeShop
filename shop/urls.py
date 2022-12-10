@@ -54,7 +54,7 @@ urlpatterns = [
     path('payment/', PaymentView.as_view(), name='payent'),
     path('request-refund/', RequestRefundView.as_view(), name='request-refund'),
     path('sign-up/', Register, name='register'),
-    path('sign-in/', SignIn, name='signin'),
+    path('accounts/login/', SignIn, name='signin'),
     path('signout/', Sign_Out, name='signout'),
     path('pay/', Payment_P, name='payment'),
 

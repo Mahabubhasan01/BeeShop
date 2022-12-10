@@ -1,33 +1,38 @@
-from django.urls import reverse
 import random
 import string
 import stripe
 from django.conf import settings
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import redirect
-from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
-from django.http import HttpResponseRedirect
+from django.contrib import messages
+from sslcommerz_lib import SSLCOMMERZ
 from django.shortcuts import redirect
-from django.contrib.auth import update_session_auth_hash
-from django.views.generic import ListView, DetailView, View
 from django.contrib.auth import logout
+from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User, auth
+from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.views.generic import ListView, DetailView, View
 from .forms import CheckoutForm, CouponForm, RefundForm, PaymentForm
 from .models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, UserProfile
-from sslcommerz_lib import SSLCOMMERZ
-from django.contrib import messages
 from django.contrib.auth.forms import (
     AuthenticationForm,
     PasswordChangeForm,
     PasswordResetForm,
     SetPasswordForm,
 )
-from django.conf import settings
 stripe.api_key = settings.STRIPE_SECRET_KEY
+
+firebaseConfig = {
+    "apiKey": "AIzaSyCwyCiC4RXGY0T9Xd7lEmeCD2ruQymKUc8",
+    "authDomain": "beeshop-21dd2.firebaseapp.com",
+    "projectId": "beeshop-21dd2",
+    "storageBucket": "beeshop-21dd2.appspot.com",
+    "messagingSenderId": "940835277149",
+    "appId": "1:940835277149:web:0e91e55c81764df24900b4"
+}
 
 
 def create_ref_code():
@@ -55,6 +60,7 @@ def dashboard_influencer(request):
     return render(request, 'dashboard/dashboard-influencer.html', context)
 
 
+@login_required
 def DashboardIndex(request):
     username = request.user.username
     total = 0
@@ -119,7 +125,7 @@ class ProductDetailView(DetailView):
     template_name = "dashboard/ecommerce-product-single.html"
 
 
-class CheckoutView(View):
+class CheckoutView(LoginRequiredMixin, View):
     def get(self, *args, **kwargs):
         try:
             order = Order.objects.get(user=self.request.user, ordered=False)
@@ -290,7 +296,7 @@ class CheckoutView(View):
             return redirect("shop:order-summary")
 
 
-class PaymentView(View):
+class PaymentView(LoginRequiredMixin, View):
     def get(self, *args, **kwargs):
         order = Order.objects.get(user=self.request.user, ordered=False)
         if order.billing_address:
@@ -429,7 +435,7 @@ class PaymentView(View):
         return redirect("/payment/stripe/")
 
 
-class All_Favourite(ListView):
+class All_Favourite(LoginRequiredMixin, ListView):
     context_object_name = 'Item'
     queryset = Item.objects.filter(favourite=True)
     template_name = 'favourite.html'
@@ -474,7 +480,14 @@ def Payment_P(request):
     return HttpResponseRedirect((response['GatewayPageURL']))
 
 
-class OrderSummaryView(View):
+""" from django.contrib.auth.mixins import LoginRequiredMixin
+
+class MyView(LoginRequiredMixin, View):
+    login_url = '/login/'
+    redirect_field_name = 'redirect_to' """
+
+
+class OrderSummaryView(LoginRequiredMixin, View):
     def get(self, *args, **kwargs):
         try:
             order = Order.objects.get(user=self.request.user, ordered=False)
@@ -492,7 +505,7 @@ class ItemDetailView(DetailView):
     template_name = "product.html"
 
 
-# @login_required
+@login_required
 def add_to_cart(request, slug):
     item = get_object_or_404(Item, slug=slug)
     order_item, created = OrderItem.objects.get_or_create(
@@ -549,7 +562,7 @@ def remove_from_cart(request, slug):
         return redirect("shop:product", slug=slug)
 
 
-# @login_required
+@login_required
 def remove_single_item_from_cart(request, slug):
     item = get_object_or_404(Item, slug=slug)
     order_qs = Order.objects.filter(
@@ -589,7 +602,7 @@ def get_coupon(request, code):
         return redirect("shop:checkout")
 
 
-class AddCouponView(View):
+class AddCouponView(LoginRequiredMixin, View):
     def post(self, *args, **kwargs):
         form = CouponForm(self.request.POST or None)
         if form.is_valid():
@@ -606,7 +619,7 @@ class AddCouponView(View):
                 return redirect("shop:checkout")
 
 
-class RequestRefundView(View):
+class RequestRefundView(LoginRequiredMixin, View):
     def get(self, *args, **kwargs):
         form = RefundForm()
         context = {
@@ -690,7 +703,8 @@ def SignIn(request):
 
         if user is not None:
             auth.login(request, user)
-            return redirect('/')
+            return redirect(f'{settings.LOGIN_REDIRECT_URL}?next={request.path}')
+            """ return redirect('/') """
         else:
             messages.info(request, 'Credentials Invalid')
             return redirect('shop:signin')
@@ -701,9 +715,10 @@ def SignIn(request):
 
 def Sign_Out(request):
     logout(request)
-    return redirect('shop:signin')
+    return redirect('/')
 
 
+@login_required
 def change_password(request):
     if request.user.is_authenticated:
         if request.method == 'POST':

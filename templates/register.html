@@ -81,7 +81,7 @@
   .back {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: end;
     top: 0;
     color: #e81ab2;
     cursor: pointer;
@@ -228,7 +228,7 @@
     class="alert alert-{{ message.tags }} alert-dismissible fade show"
     role="alert"
   >
-    {{ message }}
+   <h4 class='text-red text-center'> {{ message }}</h4>
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -318,7 +318,9 @@
           />
         </div>
         <div class="input-control">
-          <a href="#" class="text text-links"></a>
+          <a href="" class="text text-links"
+            ><input type="checkbox" /> Terms & conditions
+          </a>
           <input
             type="submit"
             name="submit"
@@ -327,27 +329,6 @@
           />
         </div>
       </form>
-      {% comment %}
-      <div class="striped">
-        <span class="striped-line"></span>
-        <span class="striped-text">Or</span>
-        <span class="striped-line"></span>
-      </div>
-      <div class="method">
-        <div class="method-control">
-          <a href="#" class="method-action">
-            <i class="ion ion-logo-google"></i>
-            <span>Sign up with Google</span>
-          </a>
-        </div>
-        <div class="method-control">
-          <a href="#" class="method-action">
-            <i class="ion ion-logo-facebook"></i>
-            <span>Sign up with Facebook</span>
-          </a>
-        </div>
-      </div>
-      {% endcomment %}
     </section>
   </div>
 </main>

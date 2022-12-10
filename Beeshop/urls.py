@@ -19,7 +19,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('shop.urls'))
+    path('', include('shop.urls')),
+    path('accounts/', include('allauth.urls')),
+
 ]
 handler404 = 'shop.views.error_404_view'
 if settings.DEBUG:

@@ -1,420 +1,163 @@
-{% extends 'base.html' %} {% block content %} {% load static %}
+{% extends 'base.html' %} {% block content %} 
+{% load static %}
 <style>
-  .allwrps {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));  
-    grid-gap: 20px;
-    max-width: 800px;
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: #f1f1f1;
+    padding: 30px;
+    font-family: Arial;
+  }
+
+  /* Center website */
+  .main {
+    max-width: 1000px;
     margin: auto;
   }
 
-  .single {
-    width: 190px;
-    height: 190px;
-    text-align: center;
-    line-height: 200px;
-    background: red;
-    margin: 0 5px;
-    margin-top: 10px;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    transition: 0.3s;
-  }
-  .btns {
-    text-align: center;
-    margin-top: 50px;
-    margin-bottom: 30px;
+  h1 {
+    font-size: 50px;
+    word-break: break-all;
   }
 
-  .btns button {
-    padding: 15px 40px;
-    border: none;
-    outline: none;
-    border-radius: 5px;
-    margin: 0 10px;
-    cursor: pointer;
-    transition: 0.3s;
+  .row {
+    margin: 8px -16px;
   }
 
-  .btns button:hover,
-  .btns button.active {
-    background: blueviolet;
-    color: #fff;
+  /* Add padding BETWEEN each column (if you want) */
+  .row,
+  .row > .column {
+    padding: 8px;
   }
-  .product .product-description,
-  main[role="main"] {
-    *zoom: 1;
+
+  /* Create three equal columns that floats next to each other */
+  .column {
+    float: left;
+    width: 33.33%;
+    display: none;
+    /* Hide columns by default */
   }
-  .product .product-description:after,
-  main[role="main"]:after {
+
+  /* Clear floats after rows */
+  .row:after {
     content: "";
     display: table;
     clear: both;
   }
 
-  *,
-  *::after,
-  *::before {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -o-box-sizing: border-box;
-    box-sizing: border-box;
-  }
-
-  p {
-    margin: 0 0 30px;
-  }
-
-  a {
-    text-decoration: none;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-weight: 300;
-    color: #31353d;
-    margin: 0;
-  }
-
-  ul {
-    padding: 0;
-    list-style: none;
-  }
-
-  abbr {
-    cursor: help;
-  }
-
-  body {
-    background: url("../img/main-bg.png");
-    color: #aaa;
-    font-size: 14px;
-    font-family: "MavenProRegular", arial, tahoma, trebuchet ms, verdana;
-    height: 100%;
-  }
-
-  img {
-    max-width: 80%;
-  }
-
-  figure {
-    margin: 0;
-    line-height: 0;
-  }
-
-  main[role="main"] {
-    max-width: 500px;
-    margin: 20px auto;
-    position: relative;
-  }
-
-  .product {
-    background: #fff;
-    max-width: 300px;
-    position: relative;
-    z-index: 15;
-    margin: 0 auto;
-    -webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
-    -moz-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
-    -o-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
-  }
-  .product .product-description {
-    position: relative;
-    z-index: 15;
-    background: #fff;
-  }
-  .product .product-description .info {
-    padding: 15px;
-    color: #aaa;
-    font-size: 0.85em;
-    width: 75%;
-    float: left;
-  }
-  .product .product-description .info h1 {
-    font-size: 20px;
-    margin: 0 0 5px;
-  }
-  .product .product-description .info p {
-    margin-bottom: 15px;
-    line-height: 1.3em;
-  }
-  .product .product-description .price {
-    width: 25%;
-    float: left;
-    color: #9bb6aa;
-    font-size: 2em;
-    position: relative;
-    margin-top: 25px;
-  }
-  .product .product-description .price::before {
-    content: "$";
-    position: absolute;
-    top: 0;
-    left: -10px;
-    font-size: 0.35em;
-  }
-  .product .product-sidebar {
-    height: 100%;
-    background: #31353d;
-    width: 50px;
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: -1;
-    -webkit-transition: right 0.3s ease;
-    -moz-transition: right 0.3s ease;
-    -o-transition: right 0.3s ease;
-    transition: right 0.3s ease;
-    -webkit-border-radius: 0 2px 2px 0;
-    -moz-border-radius: 0 2px 2px 0;
-    -o-border-radius: 0 2px 2px 0;
-    border-radius: 0 2px 2px 0;
-  }
-  .product .product-sidebar button {
-    border: 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-    color: #fff;
-    padding: 0.9em;
-    font-size: 0.8em;
-    width: 50px;
-    height: 50px;
-    overflow: hidden;
-    -webkit-transition: all 0.4s ease;
-    -moz-transition: all 0.4s ease;
-    -o-transition: all 0.4s ease;
-    transition: all 0.4s ease;
-  }
-  .product .product-sidebar button.buy {
-    background: transparent
-      url("https://raw.githubusercontent.com/brunodsgn/productpreview/master/assets/img/icons/buy.png")
-      no-repeat 15px;
-  }
-  .product .product-sidebar button.info {
-    background: transparent
-      url("https://raw.githubusercontent.com/brunodsgn/productpreview/master/assets/img/icons/info.png")
-      no-repeat 15px;
-  }
-  .product .product-sidebar button.size {
-    background: transparent
-      url("https://raw.githubusercontent.com/brunodsgn/productpreview/master/assets/img/icons/sizes.png")
-      no-repeat 15px;
-  }
-  .product .product-sidebar button.colors {
-    background: transparent
-      url("https://raw.githubusercontent.com/brunodsgn/productpreview/master/assets/img/icons/colors.png")
-      no-repeat 15px;
-  }
-  .product .product-sidebar button.colors span {
-    margin-left: 40px;
-  }
-  .product .product-sidebar button.colors:hover {
-    width: 130px;
-  }
-  .product .product-sidebar button.colors .color {
+  /* Content */
+  .content {
+    background-color: white;
     padding: 10px;
-    display: inline-block;
-    vertical-align: middle;
-    margin: 0;
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=($opacity * 100))";
-    filter: alpha(opacity=70);
-    -moz-opacity: 0.7;
-    -khtml-opacity: 0.7;
-    opacity: 0.7;
-    -webkit-transition: all 0.3s ease;
-    -moz-transition: all 0.3s ease;
-    -o-transition: all 0.3s ease;
-    transition: all 0.3s ease;
-  }
-  .product .product-sidebar button.colors .color.black {
-    background: #000;
-    border-bottom: 2px solid #555;
-  }
-  .product .product-sidebar button.colors .color.white {
-    background: #fff;
-    border-bottom: 2px solid #e5e5e5;
-  }
-  .product .product-sidebar button.colors .color.red {
-    background: #ea1535;
-    border-bottom: 2px solid #ef566d;
-  }
-  .product .product-sidebar button.colors .color:hover {
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=($opacity * 100))";
-    filter: alpha(opacity=100);
-    -moz-opacity: 1;
-    -khtml-opacity: 1;
-    opacity: 1;
-    -webkit-transform: scale(1.1);
-    -moz-transform: scale(1.1);
-    -o-transform: scale(1.1);
-    transform: scale(1.1);
-  }
-  .product .product-sidebar button span {
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=($opacity * 100))";
-    filter: alpha(opacity=0);
-    -moz-opacity: 0;
-    -khtml-opacity: 0;
-    opacity: 0;
-    white-space: nowrap;
-    margin-left: 30px;
-  }
-  .product .product-sidebar button:hover {
-    width: 130px;
-    background-color: #9bb6aa;
-    position: relative;
-    background-position: 15px center;
-    border-color: #9bb6aa;
-  }
-  .product .product-sidebar button:hover span {
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=($opacity * 100))";
-    filter: alpha(opacity=100);
-    -moz-opacity: 1;
-    -khtml-opacity: 1;
-    opacity: 1;
-  }
-  .product:hover .product-sidebar {
-    right: -50px;
   }
 
-  @media screen and (max-width: 480px) {
-    #content {
-      margin-top: 60px;
-    }
-
-    .product .product-sidebar {
-      width: 100%;
-      height: 50px;
-      bottom: 0px;
-      left: 0;
-      top: inherit;
-      -webkit-border-radius: 0 0px 2px 2px;
-      -moz-border-radius: 0 0px 2px 2px;
-      -o-border-radius: 0 0px 2px 2px;
-      border-radius: 0 0px 2px 2px;
-      -webkit-transition: bottom 0.3s ease;
-      -moz-transition: bottom 0.3s ease;
-      -o-transition: bottom 0.3s ease;
-      transition: bottom 0.3s ease;
-    }
-    .product:hover .product-sidebar {
-      bottom: -50px;
-    }
+  /* The "show" class is added to the filtered elements */
+  .show {
+    display: block;
   }
-  @media screen and (max-width: 360px) {
-    .product .product-sidebar {
-      bottom: -50px;
+
+  /* Style the buttons */
+  .btn {
+    border: none;
+    outline: none;
+    padding: 12px 16px;
+    background-color: white;
+    cursor: pointer;
+  }
+
+  /* Add a grey background color on mouse-over */
+  .btn:hover {
+    background-color: #ddd;
+  }
+
+  /* Add a dark background color to the active button */
+  .btn.active {
+    background-color: #666;
+    color: white;
+    
+  }
+  @media only screen and (max-width: 600px) {
+    .row{
+      display:grid;
+      grid-template-column:repeat(1,3fr)
+    }
+    .column{
+      width:100%
     }
   }
 </style>
-
-<div class="btns">
-  <button type="button" data-menu="all">All</button>
+<h2>Filter by Category</h2>
+<div id="myBtnContainer">
+  <button class="btn active" onclick="filterSelection('all')">Show all</button>
   {% for item in object_list %}
-  <button type="button" data-menu="{{item.category}}">{{item.category}}</button>
+  <button class="btn" onclick="filterSelection('{{item.category}}')">
+    {{item.category}}
+  </button>
   {% endfor %}
 </div>
-<div class="allwrps">
+
+<!-- Portfolio Gallery Grid -->
+<div class="row ">
   {% for item in object_list %}
-  <main role="main">
-    <div class="product singles" data-menu="{{item.category}}">
-      <figure>
-        <img
-          src="{{item.image.url}}"
-          alt="Product Image"
-          class="product-image"
-        />
-      </figure>
-
-      <div class="product-description">
-        <div class="info">
-          <a href="{% url 'shop:product_detail' item.slug %}"><h1>{{item.title}}</h1></a>
-          <p>{{item.description | truncatechars:70}}</p>
-        </div>
-
-        <div class="price">{{item.price}}</div>
-      </div>
-
-      <div class="product-sidebar">
-        <button class="buy">
-          <a href="{% url 'shop:product_detail' item.slug %}"><span>Cart+</span></a>
-          
-        </button>
-
-        <button class="info">
-          <span>MORE INFO</span>
-        </button>
-
-        <button class="size">
-          <span>SIZES</span>
-        </button>
-
-        <button class="colors">
-          <span>
-            <a href="" class="color black"></a>
-            <a href="" class="color white"></a>
-            <a href="" class="color red"></a>
-          </span>
-        </button>
+    <div class="column {{item.category}}">
+      <div class="content">
+        <img src="{{item.image.url}}" alt="Mountains" style="width: 100%" />
+        <a href="{% url 'shop:product' item.slug %}"><h4>{{item.title}}</h4></a>
+        <p>{{item.description | truncatechars:60}}</p>
       </div>
     </div>
-  </main>
   {% endfor %}
+  <!-- END GRID -->
 </div>
-{% comment %}
-<div class="allwrps">
-  {% for item in object_list %}
-  <div data-menu="{{item.title}}" class="single">{{item.title}}</div>
-  {% endfor %}
-</div>
-{% endcomment %}
 <script>
-  function Filtering() {
-    let buttons = document.querySelectorAll(".btns button");
-    let blocks = document.querySelectorAll(".singles");
-    buttons.forEach((button) => {
-      button.addEventListener("click", (e) => {
-        blocks.forEach((block) => {
-          block.classList.remove("active");
-          block.style.transform = `scale(0)`;
-          block.style.opacity = `0`;
-          block.style.visibility = `hidden`;
-          block.style.width = `0`;
-          block.style.marginLeft = `0`;
-          block.style.marginRight = `0`;
-          block.style.height = `0`;
-        });
+  filterSelection("all"); // Execute the function and show all columns
+  function filterSelection(c) {
+    var x, i;
+    x = document.getElementsByClassName("column");
+    if (c == "all") c = "";
+    // Add the "show" class (display:block) to the filtered elements, and remove the "show" class from the elements that are not selected
+    for (i = 0; i < x.length; i++) {
+      w3RemoveClass(x[i], "show");
+      if (x[i].className.indexOf(c) > -1) w3AddClass(x[i], "show");
+    }
+  }
 
-        blocks.forEach((blk) => {
-          if (e.target.dataset.menu == blk.dataset.menu) {
-            blk.classList.add("active");
-            blk.style.transform = `scale(1)`;
-            blk.style.opacity = `1`;
-            blk.style.visibility = `visible`;
-            blk.style.width = `300px`;
-            blk.style.marginLeft = `5px`;
-            blk.style.marginRight = `5px`;
-            blk.style.height = `300px`;
-          }
-        });
-        if (e.target.dataset.menu == "all") {
-          blocks.forEach((block) => {
-            block.classList.add("active");
-            block.style.transform = `scale(1)`;
-            block.style.opacity = `1`;
-            block.style.visibility = `visible`;
-            block.style.width = `300px`;
-            block.style.marginLeft = `5px`;
-            block.style.marginRight = `5px`;
-            block.style.height = `300px`;
-          });
-        }
-      });
+  // Show filtered elements
+  function w3AddClass(element, name) {
+    var i, arr1, arr2;
+    arr1 = element.className.split(" ");
+    arr2 = name.split(" ");
+    for (i = 0; i < arr2.length; i++) {
+      if (arr1.indexOf(arr2[i]) == -1) {
+        element.className += " " + arr2[i];
+      }
+    }
+  }
+
+  // Hide elements that are not selected
+  function w3RemoveClass(element, name) {
+    var i, arr1, arr2;
+    arr1 = element.className.split(" ");
+    arr2 = name.split(" ");
+    for (i = 0; i < arr2.length; i++) {
+      while (arr1.indexOf(arr2[i]) > -1) {
+        arr1.splice(arr1.indexOf(arr2[i]), 1);
+      }
+    }
+    element.className = arr1.join(" ");
+  }
+
+  // Add active class to the current button (highlight it)
+  var btnContainer = document.getElementById("myBtnContainer");
+  var btns = btnContainer.getElementsByClassName("btn");
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].addEventListener("click", function () {
+      var current = document.getElementsByClassName("active");
+      current[0].className = current[0].className.replace(" active", "");
+      this.className += " active";
     });
   }
-  Filtering();
 </script>
-
-{% endblock content %}
+{% endblock %}
