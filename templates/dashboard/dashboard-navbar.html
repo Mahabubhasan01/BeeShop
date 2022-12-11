@@ -489,8 +489,8 @@
               </ul>
             </div>
           </li>
-          <li class="nav-divider">Features</li>
-          {% comment %} <li class="nav-item">
+          <li class="nav-divider">Product</li>
+          <li class="nav-item">
             <a
               class="nav-link"
               href="#"
@@ -498,18 +498,17 @@
               aria-expanded="false"
               data-target="#submenu-6"
               aria-controls="submenu-6"
-              ><i class="fas fa-fw fa-file"></i> Pages
+              ><i class="fas fa-fw fa-file"></i>Actions
             </a>
             <div id="submenu-6" class="collapse submenu" style="">
               <ul class="nav flex-column">
                 <li class="nav-item">
-                  <a class="nav-link" href="pages/blank-page.html"
-                    >Blank Page</a
-                  >
+                  <a class="nav-link" href="pages/blank-page.html">Product</a>
                 </li>
+                {% comment %}
                 <li class="nav-item">
                   <a class="nav-link" href="pages/blank-page-header.html"
-                    >Blank Page Header</a
+                    >Update Product</a
                   >
                 </li>
                 <li class="nav-item">
@@ -560,9 +559,12 @@
                     >Color Picker</a
                   >
                 </li>
+                {% endcomment %}
               </ul>
             </div>
           </li>
+          <li class="nav-divider">Users</li>
+
           <li class="nav-item">
             <a
               class="nav-link"
@@ -571,13 +573,13 @@
               aria-expanded="false"
               data-target="#submenu-7"
               aria-controls="submenu-7"
-              ><i class="fas fa-fw fa-inbox"></i>Apps
+              ><i class="fas fa-fw fa-inbox"></i>User
               <span class="badge badge-secondary">New</span></a
             >
             <div id="submenu-7" class="collapse submenu" style="">
               <ul class="nav flex-column">
                 <li class="nav-item">
-                  <a class="nav-link" href="pages/inbox.html">Inbox</a>
+                  <a class="nav-link" href="pages/inbox.html">User Detalis</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="pages/email-details.html"
@@ -597,6 +599,8 @@
               </ul>
             </div>
           </li>
+
+          <li class="nav-divider">Products</li>
           <li class="nav-item">
             <a
               class="nav-link"
@@ -605,41 +609,19 @@
               aria-expanded="false"
               data-target="#submenu-8"
               aria-controls="submenu-8"
-              ><i class="fas fa-fw fa-columns"></i>Icons</a
+              ><i class="fas fa-fw fa-columns"></i>Products</a
             >
             <div id="submenu-8" class="collapse submenu" style="">
               <ul class="nav flex-column">
                 <li class="nav-item">
-                  <a class="nav-link" href="pages/icon-fontawesome.html"
-                    >FontAwesome Icons</a
-                  >
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="pages/icon-material.html"
-                    >Material Icons</a
-                  >
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="pages/icon-simple-lineicon.html"
-                    >Simpleline Icon</a
-                  >
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="pages/icon-themify.html"
-                    >Themify Icon</a
-                  >
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="pages/icon-flag.html">Flag Icons</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="pages/icon-weather.html"
-                    >Weather Icon</a
+                  <a class="nav-link" href="{% url 'shop:products' %}"
+                    >All product</a
                   >
                 </li>
               </ul>
             </div>
           </li>
+          {% comment %}
           <li class="nav-item">
             <a
               class="nav-link"
@@ -706,7 +688,8 @@
                 </li>
               </ul>
             </div>
-          </li> {% endcomment %}
+          </li>
+          {% endcomment %}
         </ul>
       </div>
     </nav>

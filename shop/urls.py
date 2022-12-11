@@ -3,7 +3,11 @@ from shop.models import Payment
 
 from shop.views import (
     All_Favourite,
+    All_Product_Dashboard,
+    All_User,
     DashboardIndex,
+    Delete_Prouduct,
+    Delete_User,
     ItemDetailView,
     Payment_P,
     ProductDetailView,
@@ -15,6 +19,8 @@ from shop.views import (
     Register,
     Sign_Out,
     SignIn,
+    Super_User,
+    Update_Prouduct,
     add_to_cart,
     favourite_item,
     remove_from_cart,
@@ -57,7 +63,12 @@ urlpatterns = [
     path('accounts/login/', SignIn, name='signin'),
     path('signout/', Sign_Out, name='signout'),
     path('pay/', Payment_P, name='payment'),
-
+    path('users/', All_User, name='users'),
+    path('delete-user/<int:pk>/', Delete_User, name='delete-user'),
+    path('make-admin/<int:pk>/', Super_User, name='make-admin'),
+    path('products/', All_Product_Dashboard, name='products'),
+    path('delete-product/<int:pk>/', Delete_Prouduct, name='delete-product'),
+    path('update-product/<int:pk>/', Update_Prouduct, name='update-product'),
 
     path('change-password/', change_password, name='change_password'),
 

@@ -60,7 +60,7 @@ def dashboard_influencer(request):
     return render(request, 'dashboard/dashboard-influencer.html', context)
 
 
-@login_required
+@login_required(login_url='signin')
 def DashboardIndex(request):
     username = request.user.username
     total = 0
@@ -73,6 +73,7 @@ def DashboardIndex(request):
     return render(request, 'index.html', context)
 
 
+@login_required(login_url='signin')
 def user_profile(request):
     username = request.user.username
     user = request.user
@@ -82,6 +83,54 @@ def user_profile(request):
         'username': username
     }
     return render(request, 'dashboard/pages/user-profile.html', context)
+
+
+@login_required(login_url='signin')
+def All_Product_Dashboard(request):
+    context = {
+        'users': Item.objects.all().order_by('-id')
+    }
+    template_name = 'dashboard/product-tables.html'
+    return render(request, template_name, context)
+
+
+@login_required(login_url='signin')
+def Update_Prouduct(request, pk):
+    Item.objects.get(id=pk).delete()
+    messages.success(request, 'Product Remove From Wishlist...')
+    return redirect('shop:products')
+
+@login_required(login_url='signin')
+def Delete_Prouduct(request, pk):
+    Item.objects.get(id=pk).delete()
+    messages.success(request, 'Product Remove From Wishlist...')
+    return redirect('shop:products')
+
+
+@login_required(login_url='signin')
+def All_User(request):
+    context = {
+        'users': User.objects.all().order_by('date_joined')
+    }
+    template_name = 'dashboard/pages/data-tables.html'
+    return render(request, template_name, context)
+
+
+@login_required(login_url='signin')
+def Super_User(request, pk):
+    user = User.objects.get(id=pk)
+    user.is_superuser = True
+    user.is_staff = True
+    user.save()
+    messages.success(request, 'successfully admin done')
+    return redirect('shop:users')
+
+
+@login_required
+def Delete_User(request, pk):
+    User.objects.get(id=pk).delete()
+    messages.success(request, 'Product Remove From Wishlist...')
+    return redirect('shop:users')
 
 
 def products(request):
@@ -115,7 +164,7 @@ def CategoryFilter(request, cat):
     return render(request, 'categoriesitem.html', context) """
 
 
-class All_Product(ListView):
+class All_Product(LoginRequiredMixin, ListView):
     model = Item
     template_name = 'dashboard/ecommerce-product.html'
 
@@ -449,6 +498,7 @@ def favourite_item(request, pk):
     return redirect('shop:all_product')
 
 
+@login_required(login_url='signin')
 def Payment_P(request):
     order = Order.objects.get(user=request.user, ordered=False)
 
@@ -505,7 +555,7 @@ class ItemDetailView(DetailView):
     template_name = "product.html"
 
 
-@login_required
+@login_required(login_url='signin')
 def add_to_cart(request, slug):
     item = get_object_or_404(Item, slug=slug)
     order_item, created = OrderItem.objects.get_or_create(
@@ -535,6 +585,7 @@ def add_to_cart(request, slug):
         return redirect("shop:order-summary")
 
 
+@login_required(login_url='signin')
 def remove_from_cart(request, slug):
     item = get_object_or_404(Item, slug=slug)
     order_qs = Order.objects.filter(
@@ -562,7 +613,7 @@ def remove_from_cart(request, slug):
         return redirect("shop:product", slug=slug)
 
 
-@login_required
+@login_required(login_url='signin')
 def remove_single_item_from_cart(request, slug):
     item = get_object_or_404(Item, slug=slug)
     order_qs = Order.objects.filter(
@@ -718,7 +769,7 @@ def Sign_Out(request):
     return redirect('/')
 
 
-@login_required
+@login_required(login_url='signin')
 def change_password(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
